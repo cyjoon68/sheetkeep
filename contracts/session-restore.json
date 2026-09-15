@@ -1,0 +1,17 @@
+{
+  "fields": [
+    "examId",
+    "deadlineAt",
+    "answers",
+    "inkDraft",
+    "schemaVersion",
+    "status"
+  ],
+  "variantTestIdPrefix": "session-variant-",
+  "variants": ["restoring", "active", "submitted"],
+  "restoringBlocksChoice": true,
+  "submittedReadOnly": true,
+  "remainingFromWallClock": true,
+  "timeErrorMsMax": 1000,
+  "schemaVersion": 2
+}

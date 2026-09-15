@@ -1,0 +1,10 @@
+{
+  "keyExtractor": "examId",
+  "recycleItems": true,
+  "defaultUniqueCount": 20,
+  "maxEmptyUniqueFetches": 5,
+  "coverDecodeOnlyVisible": true,
+  "tapSlopPx": 16,
+  "listComponent": "LegendList",
+  "forbiddenListComponent": "FlatList"
+}

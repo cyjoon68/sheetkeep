@@ -1,0 +1,13 @@
+export const DEFAULT_EXAM_COUNT = 20;
+export const PAGE_SIZE = 20;
+export const MAX_EMPTY_UNIQUE_FETCHES = 5;
+export const TAP_SLOP_PX = 16;
+export const EXAM_CARD_HEIGHT = 132;
+export const COVER_WIDTH = 72;
+export const COVER_HEIGHT = 96;
+export const QUESTION_COUNT = 5;
+export const CHOICE_LABELS = ["①", "②", "③", "④", "⑤"] as const;
+export const SUNEUNG_DURATION_MS = 80 * 60 * 1000;
+export const MOCK_DURATION_MS = 60 * 60 * 1000;
+export const CIVIL_DURATION_MS = 50 * 60 * 1000;
+export const VIEWABILITY_ITEM_PERCENT = 50;
