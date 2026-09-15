@@ -1,3 +1,4 @@
+import "@/theme/unistyles";
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
 import { Text, View } from "react-native";
 import { StyleSheet } from "react-native-unistyles";

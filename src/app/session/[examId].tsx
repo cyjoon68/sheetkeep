@@ -1,3 +1,4 @@
+import "@/theme/unistyles";
 import { useLocalSearchParams } from "expo-router";
 
 import SessionScreen from "@/screens/session-screen";

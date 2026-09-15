@@ -1,53 +1,45 @@
-<p align="center">
-  <img src="assets/images/icon.png" alt="SheetKeep" width="96">
-</p>
+# SheetKeep
 
-<p align="center">
-  <strong>Pick a Korean exam paper, sit a timed session, come back to the same clock.</strong>
-</p>
+시험지를 고르고 제한 시간 안에 푼다. 수능, 모의고사, 공무원 시험지를 골라 선지를 고르고 제출한다. 제출 전에 앱을 꺼도 같은 시험, 같은 답, 남은 시간이 돌아온다.
 
-<p align="center">
-  <a href="https://docs.expo.dev/versions/v57.0.0"><img src="https://img.shields.io/badge/Expo-57-000020?logo=expo" alt="Expo 57"></a>
-  <a href="https://reactnative.dev"><img src="https://img.shields.io/badge/React%20Native-0.86-61DAFB?logo=react" alt="React Native 0.86"></a>
-  <a href="https://www.typescriptlang.org"><img src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript" alt="TypeScript"></a>
-  <img src="https://img.shields.io/badge/New%20Architecture-enabled-22c55e" alt="New Architecture enabled">
-  <img src="https://img.shields.io/badge/tests-22%20passing-22c55e" alt="22 tests passing">
-</p>
+Expo SDK 57, React Native 0.86, SQLite, New Architecture. 개발 클라이언트 빌드가 필요하다.
 
----
+## 화면
 
-**SheetKeep** is an Expo app for choosing a booklet and sitting it under a timer. Open the catalog, pick 수능, 모의고사, or 공무원, answer, submit. Close the app before submit and the same paper, answers, and remaining time come back.
+시험지 목록.
 
-Built with Expo SDK 57, React Native 0.86, SQLite, and the New Architecture. A development client is required.
+![시험지 목록](docs/screenshots/catalog.png)
 
-## Why SheetKeep?
+시간 안에 푸는 시험 세션.
 
-Exam catalogs fail when the list is large, pages repeat ids, or the process dies mid-session. SheetKeep keeps those cases in tests. The default app is twenty unique papers.
+![시험 세션](docs/screenshots/session.png)
 
-| Problem | Common approach | SheetKeep |
+## 왜 이렇게 만들었나
+
+시험지가 많거나, 페이지에 같은 id가 반복되거나, 시험 중에 프로세스가 죽으면 목록과 세션이 깨진다. 기본 실행은 서로 다른 시험지 20장이다. 200장, 중복 페이지, 큰 표지는 테스트에만 넣는다.
+
+| 문제 | 흔한 방식 | SheetKeep |
 | --- | --- | --- |
-| Timer resets after a phone call | elapsed state in memory | `deadlineAt` wall clock in SQLite |
-| Restore paints an empty paper over saved answers | write as soon as the screen mounts | `restoring` variant blocks `onChoice` |
-| Catalog mounts every row | `ScrollView` / `FlatList` without a window | LegendList `recycleItems`, key `examId` |
-| Duplicate page ids look like the end of the list | stop when length does not grow | skip seen ids, fetch next page (budget 5) |
-| Covers decode off-screen | one image per row, always | decode only visible rows |
-| Card press fires while scrolling | parent scroll wins | tap slop on the card |
+| 전화 후 타이머가 리셋됨 | 메모리 elapsed | SQLite `deadlineAt` 벽시계 |
+| 복원 중 빈 시험이 답을 덮음 | 화면이 뜨자마자 기록 | `restoring`이면 `onChoice` 차단 |
+| 목록이 모든 행을 마운트 | 윈도우 없는 `ScrollView` / `FlatList` | LegendList `recycleItems`, 키 `examId` |
+| 중복 id 페이지에서 목록이 멈춤 | 길이가 안 늘면 끝으로 처리 | 본 id는 건너뛰고 다음 페이지 (예산 5) |
+| 화면 밖 표지까지 decode | 행마다 이미지 항상 로드 | 보이는 행만 decode |
+| 스크롤 중 카드가 눌림 | 부모 스크롤이 탭을 먹음 | 카드 탭 slop |
 
-200-row catalogs, duplicate-only pages, and huge covers exist only in tests.
+## 하는 일
 
-## Features
+- 기본 시험지 20장. `2026 수능 국어 짝수형`, `6월 모의`, `공무원 한국사` 포함
+- 남은 시간, 선지, 제출
+- 같은 설치, 같은 `examId`로 답과 초안 복원
+- 보이는 카드만 살린다. LegendList 데모가 아니다
+- iOS/Android New Architecture
+- 시험지 제목·표지 카피는 EAS Update로 같은 바이너리에 올린다
 
-- **Catalog** — twenty unique papers, including `2026 수능 국어 짝수형`, `6월 모의`, `공무원 한국사`
-- **Timed session** — remaining time, choices, submit
-- **Restore** — same install, same `examId`, answers and ink draft
-- **LegendList window** — visible cards only; not a list-library demo
-- **New Architecture** — `expo.newArchEnabled` is true for iOS and Android
-- **EAS Update** — catalog title or cover copy on the same binary
-
-## Quick Start
+## 실행
 
 > [!IMPORTANT]
-> SheetKeep needs a development build, not Expo Go. `expo-sqlite` and `react-native-unistyles` do not run in Expo Go.
+> Expo Go가 아니다. `expo-sqlite`와 `react-native-unistyles`는 개발 빌드가 필요하다.
 
 ```bash
 npm install
@@ -56,51 +48,27 @@ npx eas build --profile development --platform ios
 npx expo start --dev-client
 ```
 
-## How It Works
+## 화면 흐름
 
-```
-Catalog                         Session
-+------------------+            +------------------+
-| paper cards      |  tap       | remaining time   |
-| title / year     | ---------> | choices          |
-| cover            |            | [Submit]         |
-+------------------+            +------------------+
-        |                                |
-        |  SQLite session                |  restoring gate
-        +--------------------------------+
-```
+목록에서 카드를 누르면 세션이 시작된다. 세션은 SQLite에 저장되고, 복원 중에는 선지를 받지 않는다.
 
-`src/app` is Expo Router. `src/screens/sheet-list-screen.tsx` and `session-screen.tsx` compose the two screens. Session persistence lives in `src/features/session`. The catalog list lives in `src/features/list`.
+`src/app`은 Expo Router. 화면은 `src/screens/sheet-list-screen.tsx`, `session-screen.tsx`. 저장은 `src/features/session`, 목록은 `src/features/list`.
 
-## Tablet runtime
+## 태블릿 런타임
 
-`ios.supportsTablet` is on. `eas.json` maps `development`, `preview`, and `production` to EAS Update channels (`@cyjoon/sheetkeep`).
+`ios.supportsTablet`이 켜져 있다. `eas.json` 채널은 `development` / `preview` / `production` (`@cyjoon/sheetkeep`).
 
-JS-only example: retitle `6월 모의` or fix a year, then:
+시험지 제목만 고친 뒤:
 
 ```bash
-npx eas update --channel production --message "fix catalog titles"
+npx eas update --channel production --message "시험지 제목 수정"
 ```
 
-Devices on that channel pick it up on next launch. Native changes still need `eas build`.
+네이티브 변경은 `eas build`가 필요하다.
 
-## System Requirements
+## 요구 사항
 
 - Node.js 20+
 - Expo SDK 57 / React Native 0.86
-- iOS Simulator or Android emulator
-- EAS account for cloud builds
-
-## Building from Source
-
-```bash
-npm install
-npm test
-npx expo start --dev-client
-```
-
-## GitHub extras
-
-Suggested topics: `expo`, `react-native`, `sqlite`, `eas-update`, `new-architecture`, `typescript`.
-
-Social preview: a catalog of Korean exam cards on the left, a timer session on the right.
+- iOS 또는 Android 시뮬레이터
+- 클라우드 빌드는 EAS 계정

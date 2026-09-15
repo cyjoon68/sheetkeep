@@ -1,3 +1,4 @@
+import "@/theme/unistyles";
 import { IBMPlexSansKR_400Regular, IBMPlexSansKR_600SemiBold } from "@expo-google-fonts/ibm-plex-sans-kr";
 import { NotoSerifKR_700Bold } from "@expo-google-fonts/noto-serif-kr";
 import { Stack } from "expo-router";
@@ -7,7 +8,6 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 
 import { SheetKeepProvider } from "@/providers";
-import "@/theme/unistyles";
 
 SplashScreen.preventAutoHideAsync();
 
