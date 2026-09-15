@@ -23,10 +23,31 @@ npm install
 npm start
 ```
 
-Use a development build. The local session store uses SQLite.
-
 ```bash
 npm test
+```
+
+## Dev client
+
+The session store uses `expo-sqlite` and styling uses `react-native-unistyles`, so the app needs a development build, not Expo Go. `expo-dev-client` is installed and the `development` profile in `eas.json` produces it.
+
+```bash
+npx eas build --profile development --platform ios
+npx expo start --dev-client
+```
+
+## New Architecture
+
+`expo.newArchEnabled` is `true` for iOS and Android, so dev, preview, and production builds all run on the New Architecture (Fabric + TurboModules).
+
+## EAS Update
+
+`runtimeVersion` uses the `appVersion` policy and each build profile in `eas.json` sets a `channel` (`development`, `preview`, `production`), so JS-only changes can ship over the air to the same binary.
+
+One real use: fix catalog titles or cover copy — e.g. retitle `6월 모의` or correct an exam year — and push it to store builds without resubmitting.
+
+```bash
+npx eas update --channel production --message "fix catalog titles"
 ```
 
 ## Stack
