@@ -1,26 +1,13 @@
-import { useEffect } from "react";
 import { Text, View } from "react-native";
 import { router } from "expo-router";
 import { StyleSheet } from "react-native-unistyles";
 
 import { ExamList, useExamList } from "@/features/list";
-import { createSessionService } from "@/features/session";
 import { useSheetKeep } from "@/providers";
 
 const SheetListScreen = () => {
-  const { catalog, sessionStore } = useSheetKeep();
+  const { catalog } = useSheetKeep();
   const { papers, loading, loadMore, decoder } = useExamList({ catalog });
-
-  useEffect(() => {
-    const service = createSessionService(sessionStore, () => Date.now());
-    const restore = async () => {
-      const inProgress = await service.loadLatestInProgress();
-      if (inProgress) {
-        router.replace(`/session/${inProgress.examId}`);
-      }
-    };
-    void restore();
-  }, [sessionStore]);
 
   return (
     <View style={styles.screen}>
